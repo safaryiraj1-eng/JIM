@@ -1,0 +1,28 @@
+name: JIM APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get project
+        uses: actions/checkout@v4
+
+      - name: Extract JIM
+        run: |
+          unzip -o JIM_Messenger_v2_4_production_one_click_final.zip -d jim_project
+          cd jim_project/jim_app/android
+          chmod +x gradlew
+
+      - name: Build APK
+        working-directory: jim_project/jim_app/android
+        run: ./gradlew assembleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: JIM-APK
+          path: jim_project/jim_app/android/app/build/outputs/apk/release/*.apk
